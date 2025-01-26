@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}     
+    <link href="{% static 'css/buttons.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Módulos de {{ curso.titulo }}</h2>
+            {% if user.is_staff or user.is_profesor %}
+                <!-- Solo mostrar este botón si el usuario es un administrador o profesor -->
+                <a href="{% url 'modulo_create' curso.pk %}" class="btn btn-light">
+                    Añadir Módulo
+                </a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            {% if modulos %}
+                <div class="list-group">
+                    {% for modulo in modulos %}
+                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1">{{ modulo.titulo }}</h5>
+                                <p class="text-muted mb-1">{{ modulo.descripcion|truncatewords:10 }}</p>
+                            </div>
+                            <div class="btn-group">
+                                <a href="{% url 'tarea_list' modulo.pk %}" class="btn btn-sm btn-info">
+                                    Tareas ({{ modulo.tarea_set.count }})
+                                </a>
+{#                                <a href="{% url 'modulo_detail' modulo.pk %}" class="btn btn-sm btn-primary">#}
+{#                                    Ver Detalles#}
+{#                                </a>#}
+                                {% if user.is_staff or user.is_profesor %}
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            Acciones
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="{% url 'modulo_update' modulo.pk %}">Editar</a>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#eliminarModuloModal{{ modulo.pk }}">
+                                                    Eliminar
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                            {% endif %}
+                            </div>
+                        </div>
+                        {% include 'modulo/modulo_confirm_delete.html' %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    No hay módulos en este curso. 
+                    {% if user.is_staff or user.is_profesor %}
+                        <a href="{% url 'modulo_create' curso.pk %}" class="alert-link">Crear primer módulo</a>
+                    {% endif %}
+                        Espere a que el profesor cree un módulo.
+                </div>
+            {% endif %}
+            <div class="text-end">
+                <a href="{% url 'curso_detail' curso.id %}" class="btn btn-primary btn-sm">
+                    Volver
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

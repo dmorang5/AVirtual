@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Calificar Tarea: {{ tarea.titulo }}</h2>
+                </div>
+                <div class="card-body">
+                    {% if entrega %}
+                        <h3>Entrega del Estudiante: {{ entrega.estudiante.username }}</h3>
+                        <p><strong>Archivo entregado:</strong> <a href="{{ entrega.archivo.url }}" target="_blank">{{ entrega.archivo.name }}</a></p>
+                        <p><strong>Fecha de entrega:</strong> {{ entrega.fecha_entrega }}</p>
+                    {% else %}
+                        <p class="text-muted">No hay entrega disponible para esta tarea.</p>
+                    {% endif %}
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="nota" class="form-label">Nota</label>
+                            <input type="number" name="nota" class="form-control {% if form.nota.errors %}is-invalid{% endif %}" id="nota" required>
+                            {% if form.nota.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.nota.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="comentarios" class="form-label">Comentarios</label>
+                            <textarea name="comentarios" class="form-control" id="comentarios" rows="4"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                Guardar Calificación
+                            </button>
+                            <a href="" class="btn btn-secondary ms-2">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

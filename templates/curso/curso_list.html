@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}     
+    <link href="{% static 'css/buttons.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Mis Cursos</h2>
+            {% if user.rol == 'profesor' %}
+                <!-- Solo mostrar este botón si el usuario es un profesor -->
+                <a href="{% url 'curso_create' %}" class="btn btn-light">
+                    Crear Nuevo Curso
+                </a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            {% if cursos %}
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    {% for curso in cursos %}
+                        <div class="col">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ curso.titulo }}</h5>
+                                    <p class="card-text">{{ curso.descripcion|truncatewords:15 }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge {% if curso.activo %}bg-success{% else %}bg-secondary{% endif %}">
+                                            {{ curso.get_activo_display }}
+                                        </span>
+                                        <a href="{% url 'curso_detail' curso.id %}" class="btn btn-sm btn-primary">
+                                            Ver Detalles
+                                        </a>
+                                    </div>
+                                    <div class="text-end">                                     
+                                        {% if user == curso.profesor %}
+                                            <a class="btn btn-success btn-sm" href="{% url 'modulo_create' curso.id %}">Crear Módulo</a>
+                                            <!-- Si el usuario es el profesor del curso, mostrar los botones de editar y eliminar -->
+                                            <a href="{% url 'curso_update' curso.id %}" class="btn btn-warning btn-sm">Editar</a>
+                                            
+                                            <!-- Eliminar curso con modal -->
+                                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#eliminarCursoModal{{ curso.pk }}">
+                                                Eliminar
+                                            </button>
+
+                                            <!-- Modal de confirmación de eliminación -->
+                                            <div class="modal fade" id="eliminarCursoModal{{ curso.pk }}" tabindex="-1" aria-labelledby="eliminarCursoModalLabel{{ curso.pk }}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-danger text-white">
+                                                            <h5 class="modal-title" id="eliminarCursoModalLabel{{ curso.pk }}">Eliminar Curso</h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form method="post" action="">
+                                                                {% csrf_token %}
+                                                                <div class="alert alert-warning">
+                                                                    <p>¿Estás seguro de que deseas eliminar el curso "{{ curso.titulo }}"?</p>
+                                                                    <p class="mb-0">Esta acción no se puede deshacer.</p>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <button type="submit" class="btn btn-danger">
+                                                                        Confirmar Eliminación
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">
+                                                                        Cancelar
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    <small>
+                                        <i class="fas fa-calendar me-2"></i>
+                                        {{ curso.fecha_inicio }} - {{ curso.fecha_fin }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    No hay cursos registrados. 
+                    <a href="{% url 'curso_create' %}" class="alert-link">Crea tu primer curso</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- Incluir el modal de eliminación -->
+{% for curso in cursos %}
+{% endfor %}    
+{% endblock %}

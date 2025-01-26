@@ -1,0 +1,27 @@
+<div class="modal fade" id="eliminarCursoModal" tabindex="-1" aria-labelledby="eliminarCursoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="eliminarCursoModalLabel">Eliminar Curso</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'curso_delete' curso.pk %}">
+                    {% csrf_token %}
+                    <div class="alert alert-warning">
+                        <p>¿Estás seguro de que deseas eliminar el curso "{{ curso.titulo }}"?</p>
+                        <p class="mb-0">Esta acción no se puede deshacer.</p>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-danger">
+                            Confirmar Eliminación
+                        </button>
+                        <button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

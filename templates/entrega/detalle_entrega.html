@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1>Detalle de Entrega</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Proyecto: {{ entrega.proyecto }}</h5>
+            <p><strong>Descripción:</strong> {{ entrega.descripcion }}</p>
+            <p><strong>Archivo:</strong> <a href="{{ entrega.archivo.url }}">{{ entrega.archivo.name }}</a></p>
+            <p><strong>Fecha Límite:</strong> {{ entrega.fecha_limite }}</p>
+Copy        {% if entrega.calificacion %}
+        <div class="alert alert-info">
+            <h6>Calificación</h6>
+            <p><strong>Nota:</strong> {{ entrega.calificacion.nota }}</p>
+            <p><strong>Comentarios:</strong> {{ entrega.calificacion.comentarios }}</p>
+        </div>
+        {% else %}
+        <a href="{% url 'crear_calificacion' entrega.pk %}" class="btn btn-success">Calificar Entrega</a>
+        {% endif %}
+    </div>
+</div>
+<div class="mt-3">
+    <a href="{% url 'editar_entrega' entrega.pk %}" class="btn btn-warning">Editar</a>
+    <a href="{% url 'eliminar_entrega' entrega.pk %}" class="btn btn-danger">Eliminar</a>
+</div>
+</div>
+{% endblock %}

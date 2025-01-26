@@ -1,0 +1,21 @@
+<div class="modal fade" id="eliminarTareaModal{{ tarea.pk }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Eliminar Tarea</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'tarea_delete' tarea.pk %}">
+                    {% csrf_token %}
+                    <div class="alert alert-warning">
+                        <p>¿Estás seguro de que deseas eliminar la tarea "{{ tarea.titulo }}"?</p>
+                        <p class="mb-0">Esta acción no puede deshacerse.</p>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Confirmar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block head %}
+    <link href="{% static 'css/buttons.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Tareas de {{ modulo.titulo }}</h2>
+            {% if user.rol == 'profesor' %}
+                <a href="{% url 'tarea_create' modulo_id=modulo.id %}" class="btn btn-light">Añadir Tarea</a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            {% if tareas %}
+                <ul class="list-group">
+                    {% for tarea in tareas %}
+                        <li class="list-group-item py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1 fw-bold">{{ tarea.titulo }}</h5>
+                                    <p class="mb-2 text-muted">{{ tarea.descripcion }}</p>
+                                    <div class="text-muted small">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Fecha límite: {{ tarea.fecha_limite | date:"d M Y, H:i" }}
+                                    </div>
+                                </div>
+                                <div class="text-end d-flex flex-column align-items-end" id="estado">
+                                    <span class="badge {{ tarea.estado|estado_clase }} mb-2">{{ tarea.estado }}</span>
+                                </div>
+                                <div class="text-end d-flex flex-column align-items-end" style="margin-bottom: 23px;">
+                                    {% if user.rol == 'profesor' %}
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            Acciones
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item text-warning" href="{% url 'tarea_update' modulo_id=modulo.id pk=tarea.id %}">Editar</a></li>
+                                            <li>
+                                                <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#eliminarTareaModal{{ tarea.pk }}">
+                                                    Eliminar
+                                                </button>
+                                            </li>
+                                            <li>
+                                                {% if tarea.estado == 'pendiente' and user.rol == 'profesor' %}
+                                                    {% with entrega=tarea.entregas.first %}
+                                                        {% if entrega %}
+                                                            <a href="{% url 'calificar_tarea' tarea_id=tarea.id entrega_id=entrega.id %}" class="dropdown-item text-success" >Calificar</a>
+                                                        {% else %}
+                                                            <a href="{% url 'calificar_tarea_sin_entrega' tarea_id=tarea.id %}" class="dropdown-item text-secundary">Calificar sin entrega</a>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                {% endif %}
+
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    {% else %}
+                                        
+                                        <a href="{% url 'tarea_detail' pk=tarea.id %}" class="btn btn-success btn-sm">Detalle</a>
+                                        <a href="{% url 'entregar_tarea' tarea_id=tarea.id %}" class="btn btn-success btn-sm">Entregar</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                        {% include 'tarea/tarea_confirm_delete.html' %}
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="alert alert-info"> 
+                    No hay tareas en este módulo. 
+                    {% if user.rol == 'profesor' %} 
+                        <a href="{% url 'tarea_create' modulo_id=modulo.id %}" class="alert-link">
+                            Crea una tarea</a> 
+                    {% endif %}
+                </div>
+            {% endif %}
+            <a href="" class="btn btn-primary btn-sm">Volver</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{#{% extends 'base.html' %}#}
+{#{% load static %}#}
+{#{% block head %}     #}
+{#    <link href="{% static 'css/buttons.css' %}" rel="stylesheet">#}
+{#{% endblock %}#}
+{#{% block content %}#}
+{#<div class="container mt-4">#}
+{#    <div class="card shadow">#}
+{#        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">#}
+{#            <h2 class="mb-0">Tareas de {{ modulo.titulo }}</h2>#}
+{#            {% if user.is_staff or user.is_profesor %}#}
+{#                <a href="{% url 'tarea_create' modulo_id=modulo.id %}" class="btn btn-light">Añadir Tarea</a>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#        <div class="card-body">#}
+{#            {% if tareas %}#}
+{#                <ul class="list-group">#}
+{#                    {% for tarea in tareas %}#}
+{#                        <li class="list-group-item py-3">#}
+{#                            <div class="d-flex justify-content-between align-items-center">#}
+{#                                <div>#}
+{#                                    <h5 class="mb-1 fw-bold">{{ tarea.titulo }}</h5>#}
+{#                                    <p class="mb-2 text-muted">{{ tarea.descripcion }}</p>#}
+{#                                    <div class="text-muted small">#}
+{#                                        <i class="fas fa-calendar me-1"></i>#}
+{#                                        Fecha límite: {{ tarea.fecha_limite | date:"d M Y, H:i" }}#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <div class="text-end d-flex flex-column align-items-end" id="#estado">#}
+{#                                    <span class="badge bg-secondary mb-2">{{ tarea.estado }}</span>#}
+{#                                </div>#}
+{#                                <div class="text-end d-flex flex-column align-items-end" style="margin-bottom: 23px;">#}
+{#                                    {% if user.is_staff or user.is_profesor %}#}
+{#                                    <div class="dropdown">#}
+{#                                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">#}
+{#                                            Acciones#}
+{#                                        </button>#}
+{#                                        <ul class="dropdown-menu">#}
+{#                                            <li><a class="dropdown-item" href="{% url 'tarea_update' modulo_id=modulo.id pk=tarea.id %}">Editar</a></li>#}
+{#                                            <li>#}
+{#                                                <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#eliminarTareaModal{{ tarea.pk }}">#}
+{#                                                    Eliminar#}
+{#                                                </button>#}
+{#                                            </li>#}
+{#                                        </ul>#}
+{#                                    </div>#}
+{#                                    {% else %}#}
+{#                                        <a href="{% url 'tarea_detail' pk=tarea.id %}" class="btn btn-success btn-sm">Detalle</a>#}
+{#                                        <a href="{% url 'entregar_tarea' tarea_id=tarea.id %}" class="btn btn-success btn-sm">Entregar</a>#}
+{#                                    {% endif %}#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <a href="" class="btn btn-primary btn-sm">Volver</a>#}
+{#                        </li>#}
+{#                        {% include 'tarea/tarea_confirm_delete.html' %}#}
+{#                    {% endfor %}#}
+{#                </ul>#}
+{#            {% else %}#}
+{#                <div class="alert alert-info">#}
+{#                    No hay tareas en este módulo.#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+{#{% endblock %}#}

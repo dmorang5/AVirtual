@@ -1,0 +1,26 @@
+<!-- Modal de Eliminación para cada módulo -->
+<div class="modal fade" id="eliminarModuloModal{{ modulo.pk }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Eliminar Módulo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'modulo_delete' modulo.pk %}">
+                    {% csrf_token %}
+                    <div class="alert alert-warning">
+                        <p>¿Eliminar el módulo "{{ modulo.titulo }}"?</p>
+                        <p class="mb-0">Esta acción eliminará todas las tareas asociadas.</p>
+                    </div>
+                    <button type="submit" class="btn btn-danger">
+                        Confirmar
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

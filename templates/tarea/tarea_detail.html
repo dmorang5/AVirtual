@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block head %}
+    <link href="{% static 'css/buttons.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">{{ tarea.titulo }}</h2>
+            {% if user.is_staff or user.is_profesor %}
+                <div class="d-flex gap-2">
+                    <a href="{% url 'tarea_update' modulo_id=tarea.modulo.id pk=tarea.id %}" class="btn btn-light btn-sm">Editar</a>
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#eliminarTareaModal">Eliminar</button>
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <h5 class="fw-bold">Descripción</h5>
+                <p>{{ tarea.descripcion }}</p>
+            </div>
+            <div class="mb-3">
+                <h5 class="fw-bold">Fecha Límite</h5>
+                <p>
+                    <i class="fas fa-calendar me-1"></i>
+                    {{ tarea.fecha_limite|date:"d M Y, H:i" }}
+                </p>
+            </div>
+            <div class="mb-3">
+                <h5 class="fw-bold">Archivo</h5>
+                <p>
+                    {% if entrega_existente and entrega_existente.archivo %}
+                        <!-- Si existe el archivo de la entrega -->
+                        <a href="{{ entrega_existente.archivo.url }}" target="_blank">{{ entrega_existente.archivo.name }}</a>
+                    {% else %}
+                        <!-- Si no hay archivo en la entrega -->
+                        <span>No se ha subido la tarea.</span>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="mb-3">
+                <h5 class="fw-bold">Estado</h5>
+                <span class="badge {{ tarea.estado|estado_clase }} mb-2">{{ tarea.estado }}</span>
+            </div>
+            <a href="">Volver</a>
+        </div>
+    </div>
+    {% if user.is_authenticated and not user.is_staff and not user.is_profesor %}
+{#    <button type="submit" class="btn btn-success">Entregar</button>#}
+    {% endif %}
+</div>
+
+<!-- Modal de Eliminación -->
+<div class="modal fade" id="eliminarTareaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Eliminar Tarea</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'tarea_delete' pk=tarea.id %}">
+                    {% csrf_token %}
+                    <div class="alert alert-warning">
+                        <p>¿Estás seguro de que deseas eliminar la tarea "{{ tarea.titulo }}"?</p>
+                        <p class="mb-0">Esta acción no puede deshacerse.</p>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Confirmar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

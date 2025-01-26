@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}     
+    <link href="{% static 'css/buttons.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Entregar Tarea: {{ tarea.titulo }}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="archivo" class="form-label">Subir Archivo</label>
+                            <input type="file" name="archivo" id="archivo" class="form-control {% if form.archivo.errors %}is-invalid{% endif %}" required>
+                            {% if form.archivo.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.archivo.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="descripcion" class="form-label">Descripción de la Tarea</label>
+                            <textarea name="descripcion" id="descripcion" class="form-control" rows="3" readonly>{{ tarea.descripcion }}</textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="fecha_limite" class="form-label">Fecha Límite</label>
+                            <input type="text" id="fecha_limite" class="form-control" value="{{ tarea.fecha_limite|date:"d M Y, H:i" }}" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">
+                                Entregar
+                            </button>
+                            <a href="" class="btn btn-secondary ms-2">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

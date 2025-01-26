@@ -1,0 +1,22 @@
+{% for tarea in tareas %}
+<div class="modal fade" id="entregarModal{{ tarea.id }}" tabindex="-1" aria-labelledby="entregarModalLabel{{ tarea.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="entregarModalLabel{{ tarea.id }}">Entregar Tarea</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="archivo" class="form-label">Subir Archivo</label>
+                        <input type="file" name="archivo" id="archivo" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Entregar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
