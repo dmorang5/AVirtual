@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block head %}     
+{% block head %}
     <link href="{% static 'css/buttons.css' %}" rel="stylesheet">
+    <script src="{% static 'js/curso.js' %}" defer></script>
 {% endblock %}
 {% block content %}
 <div class="container mt-4">
@@ -12,7 +13,7 @@
                     <h2 class="mb-0">Crear Nuevo Curso</h2>
                 </div>
                 <div class="card-body">
-                    <form method="post" novalidate>
+                    <form method="post" novalidate onsubmit="return validarFormulario()">
                         {% csrf_token %}
                         
                         <div class="form-group mb-3">
@@ -86,6 +87,12 @@
                     </form>
                 </div>
             </div>
+        </div>
+        <div class="text-end">
+            <!-- Botón para regresar a la página anterior -->
+            <button onclick="window.history.back()" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> Regresar
+            </button>
         </div>
     </div>
 </div>

@@ -1,0 +1,82 @@
+/* General body styling */
+body {
+    background-color: #f0f4f7;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+/* Styling for the card */
+.card {
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.card-body h2 {
+    font-size: 1.8rem;
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* Styling for the form labels */
+label.form-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+/* Styling for the form inputs and select elements */
+.custom-input {
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* On focus, inputs get a blue border */
+.custom-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* Styling for the submit button */
+button[type="submit"] {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Styling for the login link */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+    .container {
+        margin: 0;
+    }
+
+    .col-md-8, .col-lg-6 {
+        max-width: 100%;
+    }
+
+    button[type="submit"] {
+        padding: 14px;
+    }
+}

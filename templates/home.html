@@ -30,31 +30,46 @@
                         <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title">Cursos</h5>
-                                <p class="card-text">Descripción de la primera característica importante de tu sitio.</p>
+                                <p class="card-text">Accede a todos los cursos disponibles. Explora el contenido, módulos para ti.</p>
                                 <a href="{% url 'curso_list' %}" class="btn btn-primary mb-3">Ir a</a>
                             </div>
                         </div>
                     </div>
+                    {% if user.rol == 'estudiante' %}
                     <div class="col-md-4 mb-4">
-                        <div class="card h-100 ir-action" url="">
+                        <div class="card h-100 ir-action">
                             <div class="card-body">
                                 <h5 class="card-title">Tareas</h5>
-                                <p class="card-text">Descripción de la segunda característica importante de tu sitio.</p>
-                                <a href="" class="btn btn-primary mb-3">Ir a...</a>
+                                <p class="card-text">Revisa las tareas asignadas, sus fechas de entrega y envía tus trabajos de manera fácil.</p>
+                                <a href="{% url 'tarea_estudiante_list' %}" class="btn btn-primary mb-3">Ir a...</a>
                             </div>
                         </div>
                     </div>
+                    {% endif %}  
+                    {% if user.rol == 'profesor' %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 ir-action">
+                            <div class="card-body">
+                                <h5 class="card-title">Entregas</h5>
+                                <p class="card-text">Consulta y gestiona las entregas de tus estudiantes. Revisa y califica los trabajos enviados.</p>
+                                <a href="{% url 'listar_entregas' %}" class="btn btn-primary mb-3">Ir a...</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                     <div class="col-md-4 mb-4">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title">Calificaciones </h5>
-                                <p class="card-text">Descripción de la tercera característica importante de tu sitio.</p>
+                                <h5 class="card-title">Calificaciones</h5>
+                                <p class="card-text">Accede al listado de calificaciones asignadas o recibidas en la plataforma.</p>
+                                <a href="{% url 'listar_calificaciones' %}" class="btn btn-primary mb-3">Ir a...</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         {% endif %}
+
         {% if not user.is_authenticated %}
             <!-- Call to Action Section -->
             <div class="bg-light py-5 mt-5">

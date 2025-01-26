@@ -1,0 +1,125 @@
+.login-form {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+/* Estilos para los campos del formulario */
+.login-form p {
+    margin-bottom: 20px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.login-form input[type="text"]:focus,
+.login-form input[type="password"]:focus {
+    border-color: #4A90E2;
+    outline: none;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+}
+
+/* Estilos para el botón */
+.login-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-form button:hover {
+    background-color: #357ABD;
+}
+
+/* Estilos para el enlace de registro */
+.login-form p:last-child {
+    margin-top: 20px;
+    text-align: center;
+    color: #666;
+}
+
+.login-form a {
+    color: #4A90E2;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.login-form a:hover {
+    color: #357ABD;
+    text-decoration: underline;
+}
+
+/* Estilos para los mensajes de alerta */
+.alert {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.alert-error {
+    background-color: #FFE8E6;
+    border: 1px solid #FFB3B3;
+    color: #D63301;
+}
+
+.alert-success {
+    background-color: #E6FFE6;
+    border: 1px solid #B3FFB3;
+    color: #006400;
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 480px) {
+    .login-form {
+        margin: 20px;
+        padding: 20px;
+    }
+}
+
+/* Animación de entrada suave */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-form {
+    animation: fadeIn 0.5s ease-out;
+}

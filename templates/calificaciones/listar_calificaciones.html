@@ -1,33 +1,62 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div class="container">
-    <h1>Calificaciones</h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Entrega</th>
-                <th>Nota</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for calificacion in calificaciones %}
-            <tr>
-                <td>{{ calificacion.entrega }}</td>
-                <td>{{ calificacion.nota }}</td>
-                <td>{{ calificacion.fecha_calificacion }}</td>
-                <td>
-                    <a href="{% url 'detalle_calificacion' calificacion.id %}" class="btn btn-info btn-sm">Ver</a>
-                    <a href="{% url 'editar_calificacion' calificacion.id %}" class="btn btn-warning btn-sm">Editar</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">No hay calificaciones.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h1 class="mb-0">Calificaciones</h1>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Estudiante</th>
+                        <th>Tarea</th>
+                        <th>Nota</th>
+                        <th>Fecha</th>
+                        {% if user.rol == 'profesor' %}
+                            <th>Acciones</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for calificacion in calificaciones %}
+                        <tr>
+                            <td>{{ calificacion.entrega.estudiante }}</td>
+                            <td>{{ calificacion.entrega.tarea.titulo }}</td>
+                            <td>{{ calificacion.nota }}</td>
+                            <td>{{ calificacion.fecha_calificacion }}</td>
+                            {% if user.rol == 'profesor' %}
+                                <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        Acciones
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item text-warning" href="">Detalle</a></li>
+                                        <li>
+                                            <a class="dropdown-item text-primary" href="{{ calificacion.entrega.archivo.url }}" target="_blank">Ver archivo</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No hay calificaciones.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-end">
+                <!-- Botón para regresar a la página anterior -->
+                <button onclick="window.history.back()" class="btn btn-primary">
+                    <i class="bi bi-arrow-left"></i> Regresar
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -22,7 +22,7 @@ from django.core.exceptions import PermissionDenied
 from .forms import ModuloForm, TareaForm, CalificacionFormulario, EntregaFormulario
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, Http404
 from .models import Tarea, Entrega
 from django.utils.timezone import now
 
@@ -137,9 +137,6 @@ class ModuloCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         context['curso'] = curso
         return context
 
-    # def get_success_url(self):
-    #     return reverse_lazy('modulo_list', kwargs={'curso_id': self.kwargs['curso_id']})
-
 class ModuloUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Modulo
     form_class = ModuloForm
@@ -183,6 +180,42 @@ class TareaListView(LoginRequiredMixin, ListView):
         modulo_id = self.kwargs.get('modulo_id')
         context['modulo'] = get_object_or_404(Modulo, id=modulo_id)
         return context
+
+
+class TareaEstudianteListView(LoginRequiredMixin, ListView):
+    model = Tarea
+    template_name = 'tarea/tarea_estudiante_list.html'
+    context_object_name = 'tareas'
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if not user.is_authenticated or user.rol != 'estudiante':
+            raise Http404('No tienes permisos para ver esta página')
+
+        # Obtener los cursos en los que el estudiante está inscrito (relación implícita)
+        cursos = Curso.objects.filter(modulo__tarea__entregas__estudiante=user)
+
+        # Filtrar las tareas de los cursos en los que el estudiante está inscrito
+        tareas = Tarea.objects.filter(modulo__curso__in=cursos)
+
+        # Para cada tarea, verificar si el usuario ya la entregó
+        for tarea in tareas:
+            tarea.entregada = tarea.entregas.filter(estudiante=user).exists()
+
+        # Filtrar las tareas de los módulos de los cursos en los que el estudiante está inscrito
+        return tareas #Tarea.objects.filter(modulo__curso__in=cursos)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        # Obtener los cursos asociados al estudiante
+        context['cursos'] = Curso.objects.filter(modulo__tarea__entregas__estudiante=user)
+        context['titulo'] = 'Tareas del Estudiante'
+
+        return context
+
 
 class TareaDetailView(LoginRequiredMixin, DetailView):
     model = Tarea
@@ -299,6 +332,30 @@ def entregar_tarea(request, tarea_id):
 
     return render(request, 'tarea/entrega_form.html', {'form': form, 'tarea': tarea})
 
+
+class EntregaListView(LoginRequiredMixin, ListView):
+    model = Entrega
+    template_name = 'entrega/listar_entregas.html'
+    context_object_name = 'entregas'
+
+    def get_queryset(self):
+        from django.http import Http404
+        user = self.request.user
+        if not user.is_authenticated:
+            raise Http404('No tienes permisos para ver esta página')
+
+        # Si el usuario es un profesor, filtra las entregas de los cursos que enseña
+        if user.rol == 'profesor':
+            return Entrega.objects.filter(tarea__modulo__curso__profesor=user)
+
+        # Si el usuario es un estudiante, filtra las entregas de ese estudiante
+        elif user.rol == 'estudiante':
+            return Entrega.objects.filter(estudiante=user)
+
+        # Si el rol no es ni profesor ni estudiante, negar acceso
+        raise Http404('No tienes permisos para ver esta página')
+
+
 #   Views de calificacion
 @login_required
 def calificar_tarea(request, tarea_id, entrega_id=None):
@@ -328,3 +385,25 @@ def calificar_tarea(request, tarea_id, entrega_id=None):
 
     return render(request, 'tarea/calificar_tarea.html', {'tarea': tarea, 'entrega': entrega})
 
+
+class CalificacionListView(LoginRequiredMixin, ListView):
+    model = Calificacion
+    template_name = 'calificaciones/listar_calificaciones.html'
+    context_object_name = 'calificaciones'
+
+    def get_queryset(self):
+        from django.http import Http404
+        """Filtra las calificaciones solo para las tareas del profesor actual"""
+        user = self.request.user
+        if not user.is_authenticated or (user.rol != 'profesor' and user.rol != 'estudiante'):
+            raise Http404('No tienes permisos para ver esta página')
+
+        if user.rol == 'profesor':
+            # Si es profesor, muestra todas las calificaciones de sus cursos
+            return Calificacion.objects.filter(entrega__tarea__modulo__curso__profesor=user)
+
+        elif user.rol == 'estudiante':
+            # Si es estudiante, solo muestra las calificaciones de sus propias entregas
+            return Calificacion.objects.filter(entrega__estudiante=user)
+
+        return Calificacion.objects.none()

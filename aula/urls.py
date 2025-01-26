@@ -4,8 +4,8 @@ from . import views
 from .aula import (
     CursoListView, CursoDetailView, CursoCreateView, CursoUpdateView, CursoDeleteView,
     ModuloListView, ModuloDetailView, ModuloCreateView, ModuloUpdateView, ModuloDeleteView,
-    TareaListView, TareaDetailView, TareaCreateView, TareaUpdateView, TareaDeleteView,
-    entregar_tarea, calificar_tarea
+    TareaListView, TareaDetailView, TareaCreateView, TareaUpdateView, TareaDeleteView, TareaEstudianteListView,
+    entregar_tarea, calificar_tarea, EntregaListView, CalificacionListView
 )
 
 urlpatterns = [
@@ -31,12 +31,18 @@ urlpatterns = [
 
     # Rutas de tarea
     path('modulo/<int:modulo_id>/tarea/', TareaListView.as_view(), name='tarea_list'),
+    path('tareas/', TareaEstudianteListView.as_view(), name='tarea_estudiante_list'),
     path('tarea/<int:pk>/', TareaDetailView.as_view(), name='tarea_detail'),
     path('modulo/<int:modulo_id>/tarea/crear/', TareaCreateView.as_view(), name='tarea_create'),
     path('modulo/<int:modulo_id>/tarea/editar/<int:pk>/', TareaUpdateView.as_view(), name='tarea_update'),
     path('<int:pk>/eliminar/', TareaDeleteView.as_view(), name='tarea_delete'),
+
+    # Rutas de entregar y calificar entregas
     path('entregar_tarea/<int:tarea_id>/', entregar_tarea, name='entregar_tarea'),
     path('tarea/<int:tarea_id>/calificar/', calificar_tarea, name='calificar_tarea_sin_entrega'),
     path('tarea/<int:tarea_id>/entrega/<int:entrega_id>/calificar/', calificar_tarea, name='calificar_tarea'),
 
+    # Rutas de listar entregas y calificaciones
+    path('entregas/', EntregaListView.as_view(), name='listar_entregas'),
+    path('calificaciones/', CalificacionListView.as_view(), name='listar_calificaciones'),
 ]
