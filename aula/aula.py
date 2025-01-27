@@ -368,22 +368,27 @@ def calificar_tarea(request, tarea_id, entrega_id=None):
     if request.user.rol != 'profesor' or tarea.modulo.curso.profesor != request.user:
         return redirect('home')
 
-    # Resto de la lógica
+    # Si el formulario es válido, procesar la calificación
     if request.method == 'POST':
-        nota = request.POST.get('nota')
-        comentarios = request.POST.get('comentarios')
-        if entrega:
-            Calificacion.objects.update_or_create(
-                entrega=entrega,
-                defaults={'nota': nota, 'comentarios': comentarios, 'fecha_calificacion': timezone.now()}
-            )
-        # Cambiar el estado de la tarea
-        tarea.estado = 'calificada'
-        tarea.save()
+        form = CalificacionFormulario(request.POST)
 
-        return redirect('tarea_list', modulo_id=tarea.modulo.id)
+        if form.is_valid():
+            # Guardar o actualizar la calificación
+            calificacion = form.save(commit=False)
+            calificacion.entrega = entrega
+            calificacion.fecha_calificacion = timezone.now()
+            calificacion.save()
 
-    return render(request, 'tarea/calificar_tarea.html', {'tarea': tarea, 'entrega': entrega})
+            # Cambiar el estado de la tarea
+            tarea.estado = 'calificada'
+            tarea.save()
+
+            return redirect('tarea_list', modulo_id=tarea.modulo.id)
+
+    else:
+        form = CalificacionFormulario()
+
+    return render(request, 'tarea/calificar_tarea.html', {'tarea': tarea, 'entrega': entrega, 'form': form})
 
 
 class CalificacionListView(LoginRequiredMixin, ListView):

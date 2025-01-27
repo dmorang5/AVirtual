@@ -54,15 +54,13 @@ class CursoForm(forms.ModelForm):
         fecha_inicio = cleaned_data.get('fecha_inicio')
         fecha_fin = cleaned_data.get('fecha_fin')
 
-        # Validaciones de fechas
         if fecha_inicio and fecha_fin:
-            # Verificar que la fecha de inicio no sea posterior a la fecha de fin
             if fecha_inicio > fecha_fin:
                 raise ValidationError("La fecha de inicio no puede ser posterior a la fecha de fin")
-
-            # Verificar que las fechas no sean en el pasado
             if fecha_inicio < timezone.now().date():
                 raise ValidationError("La fecha de inicio no puede ser en el pasado")
+            if fecha_fin < timezone.now().date():
+                raise ValidationError("La fecha de fin no puede ser en el pasado")
 
         # Validar longitud del título
         titulo = cleaned_data.get('titulo')
@@ -169,3 +167,12 @@ class CalificacionFormulario(forms.ModelForm):
             'nota': forms.NumberInput(attrs={'min': 0, 'max': 10}),
             'comentarios': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
         }
+
+        # Validación personalizada para el campo 'nota'
+    def clean_nota(self):
+        nota = self.cleaned_data.get('nota')
+
+        if nota < 0 or nota > 10:
+            raise ValidationError('La nota debe estar entre 0 y 10.')
+
+        return nota

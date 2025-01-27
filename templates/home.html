@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% load static %}
-
+{% block head %}     
+    <link href="{% static 'css/home.css' %}" rel="stylesheet">
+{% endblock %}
 {% block title %}Inicio | Aula virtual{% endblock %}
 
 {% block content %}
@@ -27,7 +29,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4 mb-4">
-                        <div class="card h-100">
+                        <div class="card h-100 shadow-lg border-0 rounded-lg">
                             <div class="card-body">
                                 <h5 class="card-title">Cursos</h5>
                                 <p class="card-text">Accede a todos los cursos disponibles. Explora el contenido, módulos para ti.</p>
@@ -37,7 +39,7 @@
                     </div>
                     {% if user.rol == 'estudiante' %}
                     <div class="col-md-4 mb-4">
-                        <div class="card h-100 ir-action">
+                        <div class="card h-100 shadow-lg border-0 rounded-lg">
                             <div class="card-body">
                                 <h5 class="card-title">Tareas</h5>
                                 <p class="card-text">Revisa las tareas asignadas, sus fechas de entrega y envía tus trabajos de manera fácil.</p>
@@ -48,7 +50,7 @@
                     {% endif %}  
                     {% if user.rol == 'profesor' %}
                     <div class="col-md-4 mb-4">
-                        <div class="card h-100 ir-action">
+                        <div class="card h-100 shadow-lg border-0 rounded-lg">
                             <div class="card-body">
                                 <h5 class="card-title">Entregas</h5>
                                 <p class="card-text">Consulta y gestiona las entregas de tus estudiantes. Revisa y califica los trabajos enviados.</p>
@@ -58,7 +60,7 @@
                     </div>
                     {% endif %}
                     <div class="col-md-4 mb-4">
-                        <div class="card h-100">
+                        <div class="card h-100 shadow-lg border-0 rounded-lg">
                             <div class="card-body">
                                 <h5 class="card-title">Calificaciones</h5>
                                 <p class="card-text">Accede al listado de calificaciones asignadas o recibidas en la plataforma.</p>
@@ -76,41 +78,12 @@
                 <div class="container text-center">
                     <h2>¿Listo para comenzar?</h2>
                     <p class="lead">Únete a nuestra comunidad y disfruta de todos los beneficios</p>
-                    {#            {% if not user.is_authenticated %}#}
-                    {#                <a href="{% url 'register' %}" class="btn btn-primary btn-lg mt-3">Crear Cuenta</a>#}
-                    {#            {% endif %}#}
                 </div>
             </div>
         {% endif %}
     </div>
 
     <style>
-        .hero-section {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
 
-        .card {
-            transition: transform 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .btn-primary {
-            padding: 10px 25px;
-        }
-
-        .display-4 {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .lead {
-            color: #34495e;
-        }
     </style>
 {% endblock %}

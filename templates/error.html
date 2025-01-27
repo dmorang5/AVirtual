@@ -1,7 +1,15 @@
 {% extends "base.html" %}
+{% load static %}
+{% block head %}
+    <link href="{% static 'css/error.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
-  <h2>Error</h2>
-  <p>{{ mensaje }}</p>
-  <a href="{% url 'home' %}">Volver al inicio</a>
+  <div class="error-container text-center py-5">
+    <div class="alert alert-danger shadow-sm rounded-lg p-4">
+      <h2 class="display-4">¡Ocurrió un error!</h2>
+      <p class="lead">{{ mensaje }}</p>
+      <a href="{% url 'home' %}" class="btn btn-primary mt-3">Volver al inicio</a>
+    </div>
+  </div>
 {% endblock %}

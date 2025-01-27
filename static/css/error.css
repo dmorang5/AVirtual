@@ -1,0 +1,38 @@
+.error-container {
+  background-color: #f8d7da;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alert {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+  font-weight: bold;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.alert h2 {
+  font-size: 2rem;
+  color: #721c24;
+  font-weight: 600;
+}
+
+.alert p {
+  font-size: 1.2rem;
+  color: #721c24;
+}
+
+.btn-primary {
+  font-size: 1.1rem;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}

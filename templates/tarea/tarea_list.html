@@ -59,7 +59,7 @@
                                         </ul>
                                     </div>
                                     {% else %}
-                                        
+
                                         <a href="{% url 'tarea_detail' pk=tarea.id %}" class="btn btn-success btn-sm">Detalle</a>
                                         <a href="{% url 'entregar_tarea' tarea_id=tarea.id %}" class="btn btn-success btn-sm">Entregar</a>
                                     {% endif %}
@@ -70,11 +70,11 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <div class="alert alert-info"> 
-                    No hay tareas en este módulo. 
-                    {% if user.rol == 'profesor' %} 
+                <div class="alert alert-info">
+                    No hay tareas en este módulo.
+                    {% if user.rol == 'profesor' %}
                         <a href="{% url 'tarea_create' modulo_id=modulo.id %}" class="alert-link">
-                            Crea una tarea</a> 
+                            Crea una tarea</a>
                     {% endif %}
                 </div>
             {% endif %}

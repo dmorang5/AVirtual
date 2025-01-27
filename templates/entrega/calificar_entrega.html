@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calificar Entrega</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
     <div class="container mt-5">
         <h1 class="text-primary">Calificar Entrega</h1>
 
@@ -14,26 +8,39 @@
         <div class="mb-4">
             <h4>Tarea: {{ entrega.tarea.titulo }}</h4>
             <p><strong>Estudiante:</strong> {{ entrega.estudiante.username }}</p>
-            <p><strong>Archivo entregado:</strong> <a href="{{ entrega.archivo.url }}" download>{{ entrega.archivo.name }}</a></p>
+            <p><strong>Archivo entregado:</strong> 
+                <a href="{{ entrega.archivo.url }}" download>{{ entrega.archivo.name }}</a>
+            </p>
             <p><strong>Fecha de entrega:</strong> {{ entrega.fecha_entrega|date:"d M Y H:i" }}</p>
         </div>
 
         <!-- Formulario de calificación -->
-        <form method="post">
+        <form method="post" onsubmit="return validarCalificacion()">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="nota" class="form-label">Nota</label>
-                <input type="number" name="nota" id="nota" class="form-control" min="0" max="10" step="0.1" required>
+               <input type="number" name="nota" id="nota" 
+               class="form-control {% if error_nota %}is-invalid{% endif %}" 
+               min="0" max="10" step="0.1" required value="{{ nota }}">
+                {% if error_nota %}
+                    <div class="invalid-feedback">
+                        {{ error_nota }}
+                    </div>
+                {% endif %}
             </div>
             <div class="mb-3">
                 <label for="comentarios" class="form-label">Comentarios</label>
-                <textarea name="comentarios" id="comentarios" class="form-control" rows="4" required></textarea>
+                <textarea name="comentarios" id="comentarios" 
+                          class="form-control" rows="4" required></textarea>
+                <div id="comentariosError" class="invalid-feedback" style="display: none;">
+                    Los comentarios son obligatorios.
+                </div>
             </div>
             <button type="submit" class="btn btn-success">Calificar</button>
             <a href="{% url 'detalle_tarea' entrega.tarea.id %}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
+    <script src="{% static 'js/calificar_entrega.js'%}" defer></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}
+

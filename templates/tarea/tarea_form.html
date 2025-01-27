@@ -13,37 +13,78 @@
                     <h2 class="mb-0">Crear Tarea para el Módulo: {{ modulo.titulo }}</h2>
                 </div>
                 <div class="card-body">
-                    <form method="post">
+                    <form method="post" novalidate onsubmit="return validarFormulario()">
                         {% csrf_token %}
+
+                        <!-- Campo Título -->
                         <div class="mb-3">
                             <label for="id_titulo" class="form-label">Título</label>
-                            {{ form.titulo }}
+                            <input type="text" name="{{ form.titulo.name }}" id="id_titulo" 
+                                   class="form-control {% if form.titulo.errors %}is-invalid{% endif %}"
+                                   value="{{ form.titulo.value|default:'' }}">
+                            <div id="id_tituloError" class="invalid-feedback">
+                                {% for error in form.titulo.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
                         </div>
+
+                        <!-- Campo Descripción -->
                         <div class="mb-3">
                             <label for="id_descripcion" class="form-label">Descripción</label>
-                            {{ form.descripcion }}
+                            <textarea name="{{ form.descripcion.name }}" id="id_descripcion" 
+                                      class="form-control {% if form.descripcion.errors %}is-invalid{% endif %}" 
+                                      rows="3">{{ form.descripcion.value|default:'' }}</textarea>
+                            <div id="id_descripcionError" class="invalid-feedback">
+                                {% for error in form.descripcion.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
                         </div>
+
+                        <!-- Campo Fecha de Entrega -->
                         <div class="mb-3">
                             <label for="id_fecha_limite" class="form-label">Fecha de Entrega</label>
-                            {{ form.fecha_limite }}
+                            <input type="date" name="{{ form.fecha_limite.name }}" id="id_fecha_limite" 
+                                   class="form-control {% if form.fecha_limite.errors %}is-invalid{% endif %}"
+                                   value="{{ form.fecha_limite.value|default:'' }}">
+                            <div id="id_fecha_limiteError" class="invalid-feedback">
+                                {% for error in form.fecha_limite.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
                         </div>
+
+                        <!-- Campo Estado -->
                         <div class="mb-3">
                             <label for="id_estado" class="form-label">Estado</label>
-                            {{ form.estado }}
+                            <select name="{{ form.estado.name }}" id="id_estado" 
+                                    class="form-control {% if form.estado.errors %}is-invalid{% endif %}">
+                                {% for option in form.estado.field.choices %}
+                                    <option value="{{ option.0 }}" {% if option.0 == form.estado.value %}selected{% endif %}>
+                                        {{ option.1 }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <div id="id_estadoError" class="invalid-feedback">
+                                {% for error in form.estado.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
                         </div>
+
+                        <!-- Botones -->
                         <div class="form-group text-end">
                             <button type="submit" class="btn btn-success">Crear Tarea</button>
-                                <!-- Botón para regresar a la página anterior -->
-                                <button onclick="window.history.back()" class="btn btn-primary">
-                                    <i class="bi bi-arrow-left"></i> Regresar
-                                </button>
+                            <button type="button" onclick="window.history.back()" class="btn btn-primary">
+                                <i class="bi bi-arrow-left"></i> Regresar
+                            </button>
                         </div>
                     </form>
-                    
                 </div>
-                
             </div>
         </div>
     </div>
 </div>
+<script src="{% static 'js/tarea.js'%}" defer></script>
 {% endblock %}
